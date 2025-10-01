@@ -6,6 +6,28 @@
 
 Smart AI Trading Platform - An advanced trading application that uses artificial intelligence to analyze markets and generate trading signals.
 
+## ⚡ التثبيت السريع | Quick Installation
+
+📖 **للحصول على دليل تثبيت مفصل، يرجى الاطلاع على** [INSTALL.md](INSTALL.md)
+
+📖 **For detailed installation guide, please see** [INSTALL.md](INSTALL.md)
+
+### طريقة سريعة | Quick Start:
+
+```bash
+git clone https://github.com/khaliiid501/smart-ai-trading.git
+cd smart-ai-trading
+npm install && pip install -r requirements.txt
+npm start & uvicorn main:app --reload
+```
+
+### باستخدام Docker | Using Docker:
+
+```bash
+docker build -t smart-ai-trading .
+docker run -d -p 3000:3000 -p 8000:8000 smart-ai-trading
+```
+
 ## 🎨 واجهة المستخدم | User Interface
 
 ### المكونات الرئيسية | Main Components
@@ -55,7 +77,8 @@ Smart AI Trading Platform - An advanced trading application that uses artificial
 ## 🚀 التثبيت والتشغيل | Installation & Setup
 
 ### المتطلبات الأساسية | Prerequisites
-```bash
+
+```
 Node.js >= 14.0.0
 npm >= 6.0.0
 Python >= 3.8
