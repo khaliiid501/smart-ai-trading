@@ -12,6 +12,7 @@ import {
   BarElement
 } from 'chart.js';
 import { Line, Bar } from 'react-chartjs-2';
+import TradeTable from './TradeTable';
 import './App.css';
 
 // تسجيل مكونات Chart.js
@@ -126,7 +127,7 @@ function App() {
     return (
       <div className="loading-container">
         <div className="spinner"></div>
-        <p>جاري تحميل البيانات...</p>
+        جاري تحميل البيانات...
       </div>
     );
   }
@@ -134,7 +135,7 @@ function App() {
   return (
     <div className="App" dir="rtl">
       <header className="app-header">
-        <h1>🤖 Smart AI Trading Platform</h1>
+        🤖 Smart AI Trading Platform
         <p className="subtitle">منصة التداول الذكي بالذكاء الاصطناعي</p>
       </header>
 
@@ -144,7 +145,7 @@ function App() {
           <h2>إشارات التداول 📊</h2>
           <div className="signals-grid">
             {signals.map((signal, index) => (
-              <div key={index} className={`signal-card ${signal.type}`}>
+              <div className={`signal-card ${signal.type}`} key={index}>
                 <div className="signal-type">
                   {signal.type === 'buy' ? '🟢 شراء' : '🔴 بيع'}
                 </div>
@@ -179,6 +180,11 @@ function App() {
           </div>
         </section>
 
+        {/* قسم جدول التداولات - Trade Table Section */}
+        <section className="trade-table-section">
+          <TradeTable />
+        </section>
+
         {/* قسم الإحصائيات */}
         <section className="stats-section">
           <h2>الإحصائيات الحالية 📈</h2>
@@ -189,16 +195,19 @@ function App() {
                 ${priceData.length > 0 ? priceData[priceData.length - 1].price.toLocaleString('en-US', { maximumFractionDigits: 2 }) : '0'}
               </div>
             </div>
+
             <div className="stat-card">
               <div className="stat-label">الحجم اليومي</div>
               <div className="stat-value">
                 {priceData.length > 0 ? (priceData[priceData.length - 1].volume / 1000000).toFixed(2) : '0'}M
               </div>
             </div>
+
             <div className="stat-card">
               <div className="stat-label">عدد الإشارات</div>
               <div className="stat-value">{signals.length}</div>
             </div>
+
             <div className="stat-card">
               <div className="stat-label">آخر تحديث</div>
               <div className="stat-value">
@@ -210,7 +219,7 @@ function App() {
       </main>
 
       <footer className="app-footer">
-        <p>© 2025 Smart AI Trading - جميع الحقوق محفوظة</p>
+        © 2025 Smart AI Trading - جميع الحقوق محفوظة
       </footer>
     </div>
   );
