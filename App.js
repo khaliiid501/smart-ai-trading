@@ -55,125 +55,180 @@ function App() {
     return () => clearInterval(interval);
   }, []);
 
-  // توليد بيانات تجريبية
+  // دالة لتوليد بيانات تجريبية
   const generateMockData = () => {
     const data = [];
-    const now = Date.now();
-    for (let i = 30; i >= 0; i--) {
+    const basePrice = 50000;
+    for (let i = 0; i < 24; i++) {
       data.push({
-        timestamp: new Date(now - i * 3600000).toISOString(),
-        price: 50000 + Math.random() * 5000,
-        volume: Math.random() * 1000000
+        time: `${i}:00`,
+        price: basePrice + Math.random() * 5000 - 2500,
+        volume: Math.random() * 1000000000
       });
     }
     return data;
   };
 
+  // دالة لتوليد إشارات تجريبية
   const generateMockSignals = () => {
     return [
-      { type: 'buy', price: 52000, timestamp: new Date().toISOString(), confidence: 0.85 },
-      { type: 'sell', price: 53500, timestamp: new Date().toISOString(), confidence: 0.78 }
+      {
+        type: 'buy',
+        confidence: 85,
+        price: 49500,
+        time: '10:30'
+      },
+      {
+        type: 'sell',
+        confidence: 78,
+        price: 51200,
+        time: '14:45'
+      },
+      {
+        type: 'buy',
+        confidence: 92,
+        price: 48800,
+        time: '18:15'
+      }
     ];
   };
 
-  // إعداد بيانات الرسم البياني للأسعار
-  const priceChartData = {
-    labels: priceData.map(d => new Date(d.timestamp).toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' })),
-    datasets: [
-      {
-        label: 'السعر (USD)',
-        data: priceData.map(d => d.price),
-        borderColor: 'rgb(75, 192, 192)',
-        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-        tension: 0.4
-      }
-    ]
-  };
-
-  // إعداد بيانات الرسم البياني للحجم
-  const volumeChartData = {
-    labels: priceData.map(d => new Date(d.timestamp).toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' })),
-    datasets: [
-      {
-        label: 'الحجم',
-        data: priceData.map(d => d.volume),
-        backgroundColor: 'rgba(54, 162, 235, 0.6)',
-        borderColor: 'rgb(54, 162, 235)',
-        borderWidth: 1
-      }
-    ]
-  };
-
+  // إعدادات الرسوم البيانية
   const chartOptions = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
       legend: {
         position: 'top',
+        labels: {
+          color: '#ffffff',
+          font: {
+            size: 12
+          }
+        }
       },
       title: {
-        display: true,
-        text: 'تحليل السوق المباشر'
+        display: false
       }
     },
     scales: {
       y: {
-        beginAtZero: false
+        ticks: {
+          color: '#a0aec0'
+        },
+        grid: {
+          color: 'rgba(255, 255, 255, 0.1)'
+        }
+      },
+      x: {
+        ticks: {
+          color: '#a0aec0'
+        },
+        grid: {
+          color: 'rgba(255, 255, 255, 0.1)'
+        }
       }
     }
+  };
+
+  // بيانات رسم الأسعار
+  const priceChartData = {
+    labels: priceData.map(d => d.time),
+    datasets: [
+      {
+        label: 'السعر (USD)',
+        data: priceData.map(d => d.price),
+        borderColor: '#10b981',
+        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+        borderWidth: 2,
+        fill: true,
+        tension: 0.4
+      }
+    ]
+  };
+
+  // بيانات رسم الحجم
+  const volumeChartData = {
+    labels: priceData.map(d => d.time),
+    datasets: [
+      {
+        label: 'حجم التداول',
+        data: priceData.map(d => d.volume),
+        backgroundColor: '#3b82f6',
+        borderColor: '#2563eb',
+        borderWidth: 1
+      }
+    ]
   };
 
   if (loading) {
     return (
       <div className="loading-container">
         <div className="spinner"></div>
-        جاري تحميل البيانات...
+        <p>جاري تحميل البيانات...</p>
       </div>
     );
   }
 
   return (
-    <div className="App" dir="rtl">
+    <div className="App">
+      {/* رأسية التطبيق - App Header */}
       <header className="app-header">
-        🤖 Smart AI Trading Platform
-        <p className="subtitle">منصة التداول الذكي بالذكاء الاصطناعي</p>
+        <div className="header-content">
+          <div className="logo-section">
+            <span className="logo-icon">🤖</span>
+            <h1>Smart AI Trading</h1>
+          </div>
+          <div className="header-subtitle">
+            منصة التداول الذكي بالذكاء الاصطناعي
+          </div>
+        </div>
       </header>
 
-      <main className="dashboard">
-        {/* قسم الإشارات */}
+      <main className="app-main">
+        {/* قسم إشارات التداول - Trading Signals Section */}
         <section className="signals-section">
-          <h2>إشارات التداول 📊</h2>
+          <h2>📊 إشارات التداول النشطة</h2>
           <div className="signals-grid">
             {signals.map((signal, index) => (
-              <div className={`signal-card ${signal.type}`} key={index}>
-                <div className="signal-type">
-                  {signal.type === 'buy' ? '🟢 شراء' : '🔴 بيع'}
+              <div 
+                key={index} 
+                className={`signal-card ${ signal.type === 'buy' ? 'buy-signal' : 'sell-signal'}`}
+              >
+                <div className="signal-header">
+                  <span className="signal-icon">
+                    {signal.type === 'buy' ? '📈' : '📉'}
+                  </span>
+                  <span className="signal-type">
+                    {signal.type === 'buy' ? 'شراء' : 'بيع'}
+                  </span>
                 </div>
-                <div className="signal-price">
-                  السعر: ${signal.price.toLocaleString()}
-                </div>
-                <div className="signal-confidence">
-                  الثقة: {(signal.confidence * 100).toFixed(0)}%
-                </div>
-                <div className="signal-time">
-                  {new Date(signal.timestamp).toLocaleString('ar-SA')}
+                <div className="signal-body">
+                  <div className="signal-price">
+                    ${signal.price.toLocaleString()}
+                  </div>
+                  <div className="signal-confidence">
+                    <span>الثقة:</span>
+                    <span className="confidence-value">{signal.confidence}%</span>
+                  </div>
+                  <div className="signal-time">⏰ {signal.time}</div>
                 </div>
               </div>
             ))}
           </div>
         </section>
 
-        {/* قسم الرسوم البيانية */}
+        {/* قسم الرسوم البيانية - Charts Section */}
         <section className="charts-section">
           <div className="chart-container">
-            <h3>رسم بياني للأسعار</h3>
+            <h3>📈 رسم بياني للأسعار</h3>
             <div className="chart-wrapper">
               <Line data={priceChartData} options={chartOptions} />
             </div>
           </div>
 
           <div className="chart-container">
-            <h3>رسم بياني لحجم التداول</h3>
+            <h3>📊 رسم بياني لحجم التداول</h3>
             <div className="chart-wrapper">
               <Bar data={volumeChartData} options={chartOptions} />
             </div>
